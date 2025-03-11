@@ -48,14 +48,14 @@ resource "aws_instance" "tool" {
     name = var.name
   }
 }
-resource "aws_route53_record" "record" {
+resource "aws_route53_record" "private" {
   zone_id = var.zone_id
   name    = "${var.name}-internal"
   type    = "A"
   ttl     = "10"
   records = [aws_instance.tool.private_ip]
 }
-resource "aws_route53_record" "record" {
+resource "aws_route53_record" "public" {
   zone_id = var.zone_id
   name    = var.name
   type    = "A"
