@@ -32,9 +32,9 @@ EOT
 resource "vault_mount" "roboshop-dev" {
   path        = "roboshop-dev"
   type        = "kv"
-  options = { version = "2"}
+  options = { version = "2" }
   description = "roboshop-dev secrets"
-
+}
 resource "vault_generic_secret" "roboshop-dev-frontend" {
   path = "${vault_mount.roboshop-dev.path}/frontend"
 
