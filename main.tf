@@ -16,7 +16,7 @@ variable "tools" {
   default = {
 
     vault = {
-      instance_type = t2.micro
+      instance_type = "t2.small"
       port          = 8200
     }
   }
@@ -24,7 +24,7 @@ variable "tools" {
 
 module "modules.infra" {
   source = "./modules.infra"
-  for.each = var.tools
+  for_each = var.tools
 
   ami_id  = var.ami_id
   zone_id = var.zone_id
