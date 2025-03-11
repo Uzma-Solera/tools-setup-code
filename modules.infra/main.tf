@@ -1,3 +1,11 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "5.81.0"
+    }
+  }
+}
 resource "aws_security_group" "tool" {
   name        = "${var.name}-sg"
   description = "Security group for tool server"
@@ -7,12 +15,12 @@ resource "aws_security_group" "tool" {
   }
 }
 
-resource "aws_security_group_rule" "ssh" {
-  type              = "ingress"
+resource "aws_vpc_security_group_ingress_rule" "ssh" {
+
   from_port         = 22
   to_port           = 22
   protocol          = "tcp"
-  cidr_blocks       = "0.0.0.0/0"
+  cidr_ipv4       = "0.0.0.0/0"
   security_group_id = aws_security_group.tool.id
   description = "ssh"
 }
