@@ -8,11 +8,10 @@ resource "aws_security_group" "tool" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "ssh" {
-
+resource "aws_vpc_security_group_ingress_rule" "allow_ssh" {
   from_port         = 22
   to_port           = 22
-  protocol          = "tcp"
+  ip_protocol        = "tcp"
   cidr_ipv4       = "0.0.0.0/0"
   security_group_id = aws_security_group.tool.id
   description = "ssh"
