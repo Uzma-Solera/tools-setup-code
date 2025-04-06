@@ -1,0 +1,123 @@
+- name: set prompt
+  ansible.builtin.shell: set-prompt {{ tool_name }}
+
+- name: LVM layout
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: lvm
+
+
+- name: check runner configured status
+  when: not runner_stat.stat.exists
+  block:
+    - name: create a github local user
+      ansible.builtin.user:
+        name: github
+
+    - name: make directory
+      ansible.builtin.file:
+        path: /actions/runner
+        state: directory
+        owner: github
+        group: github
+
+    - name: unarchive a file on remote machine
+      ansible.builtin.unarchive:
+        src: Invoke-WebRequest -Uri https://github.com/actions/runner/releases/download/v2.323.0/actions-runner-win-x64-2.323.0.zip -OutFile actions-runner-win-x64-2.323.0.zip
+        dest: /actions/runner
+        remote_src: yes
+        owner: github
+        group: github
+
+    - name: install libicu  dependency package
+      ansible.builtin.dnf:
+        name: libicu
+        state: installed
+
+
+    - name: configure runner
+      ansible.builtin.shell: ./config.cmd --url https://github.com/Uzma-Solera/roboshop-terraform --token BPDTUPOOVM5RZDRJ2VV52GLH6FPZU
+      args:
+        chdir: /actions/runner
+        become_user: github
+
+    - name: copy service file
+      ansible.builtin.template:
+        src: github-runner.service
+        dest: /etc/systemd/system/github-runner.service
+
+
+    - name: start github runner service
+      ansible.builtin.systemd_service:
+        name: github-runner
+        state: started
+        enabled: yes
+        daemon-reload: yes
+
+
+    - name: copy hashicorp repo
+      ansible.builtin.template:
+        src: hashicorp.repo
+        dest: etc/yum.repos.d/hashicorp.repo
+
+    - name: install terraform
+      ansible.builtin.dnf:
+        name: terraform
+        state: installed
+
+    - name: copy kubernetes repo file
+      ansible.builtin.template:
+        src: kubernetes.repo
+        dest: /etc/yum.repos.d/kubernetes.repo
+
+    - name: install kubectl
+      ansible.builtin.dnf:
+        name: kubectl
+        state: installed
+
+    - name: install helm
+      curl -L -O https://get.helm.sh/helm-v3.17.2-linux-amd64.tar.gz
+      tar -xf helm-v3.17.2-linux-amd64.tar.gz
+      mv linux-amd64/helm /bin/helm
+      args:
+        chdir: /tmp
+
+    - name: get docker repo
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/rhel/docker-ce.repo
+        dest: /etc/yum.repos.d/docker.repo
+
+
+    - name: install docker
+      ansible.builtin.dnf:
+        name: docker-ce
+        state: installed
+
+    - name: start docker
+      ansible.builtin.systemd_service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: add github user to docker repo
+      ansible.builtin.user:
+        name: github
+        group: docker
+
+
+    - name: enable nodejs
+      ansible.builtin.shell: dnf module disable nodejs -y ; dnf module enable nodejs:20 -y
+
+    - name: install nodejs
+      ansible.builtin.dnf:
+        name: nodejs
+
+    - name: install maven
+      ansible.builtin.dnf:
+        name: maven
+
+
+
+
+
+

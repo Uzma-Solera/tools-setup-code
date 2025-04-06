@@ -1,29 +1,13 @@
 terraform {
   backend "s3" {
-    bucket         = "terraform-uzma83"
-    key            = "tools/state"
-    region         = "us-east-1"
-  }
-}
-variable "ami_id" {
-  default = ami-09c813fb71547fc4f
-}
-variable "zone_id" {
-  default = "Z01537493BA6YJ34JEG5T"
-}
-
-variable "tools" {
-  default = {
-
-    vault = {
-      instance_type = "t2.small"
-      port          = 8200
-    }
+    bucket = "terraform-uzma83"
+    key    = "tools/state"
+    region = "us-east-1"
   }
 }
 
-module "modules-infra" {
-  source = "modules-infra"
+module "tool-infra" {
+  source = "./modules-infra"
   for_each = var.tools
 
   ami_id  = var.ami_id
@@ -31,6 +15,8 @@ module "modules-infra" {
   name    = each.key
   port    = each.value["port"]
   instance_type = each.value["instance_type"]
+  root_block_device = each.value["root_block_device"]
+  iam_policy = each.value["iam_policy"]
 
 
 
