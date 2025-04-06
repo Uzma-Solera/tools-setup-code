@@ -23,7 +23,7 @@
 
     - name: unarchive a file on remote machine
       ansible.builtin.unarchive:
-        src: https://github.com/actions-runner/releases/download/v2.323.0/actions-runner-win-x64-2.323.0.zip -OutFile actions-runner-win-x64-2.323.0.zip
+        src: https://github.com/actions/runner/releases/download/v2.323.0/actions-runner-win-x64-2.323.0.zip
         dest: /actions-runner
         remote_src: yes
         owner: github
