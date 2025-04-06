@@ -1,10 +1,10 @@
 - name: set prompt
   ansible.builtin.shell: set-prompt {{ tool_name }}
 
-- name: LVM layout
-  ansible.builtin.include_role:
-    name: common
-    tasks_from: lvm
+- name: check already runner configurd status
+  ansible.builtin.stat:
+    path: /actions-runner/.runner
+  register: runner_stat
 
 
 - name: check runner configured status
@@ -16,15 +16,15 @@
 
     - name: make directory
       ansible.builtin.file:
-        path: /actions/runner
+        path: /actions-runner
         state: directory
         owner: github
         group: github
 
     - name: unarchive a file on remote machine
       ansible.builtin.unarchive:
-        src: Invoke-WebRequest -Uri https://github.com/actions/runner/releases/download/v2.323.0/actions-runner-win-x64-2.323.0.zip -OutFile actions-runner-win-x64-2.323.0.zip
-        dest: /actions/runner
+        src: https://github.com/actions/runner/releases/download/v2.323.0/actions-runner-win-x64-2.323.0.zip -OutFile actions-runner-win-x64-2.323.0.zip
+        dest: /actions-runner
         remote_src: yes
         owner: github
         group: github
@@ -36,9 +36,9 @@
 
 
     - name: configure runner
-      ansible.builtin.shell: ./config.cmd --url https://github.com/Uzma-Solera/roboshop-terraform --token BPDTUPOOVM5RZDRJ2VV52GLH6FPZU
+      ansible.builtin.shell: ./config.cmd --url https://github.com/Uzma-Solera/roboshop-terraform --token {{ lookup('community.hashi_vault.hashi_vault', 'infra/data/github-runner:RUNNER_TOKEN token={{ vault_token }} url=http://vault-internal.uzma83.shop:8200') }} --unattended
       args:
-        chdir: /actions/runner
+        chdir: /actions-runner
         become_user: github
 
     - name: copy service file
@@ -76,11 +76,13 @@
         state: installed
 
     - name: install helm
-      curl -L -O https://get.helm.sh/helm-v3.17.2-linux-amd64.tar.gz
-      tar -xf helm-v3.17.2-linux-amd64.tar.gz
-      mv linux-amd64/helm /bin/helm
+      ansible.builtin.shell:
+        curl -L -O https://get.helm.sh/helm-v3.17.2-linux-amd64.tar.gz
+        tar -xf helm-v3.17.2-linux-amd64.tar.gz
+        mv linux-amd64/helm /bin/helm
       args:
         chdir: /tmp
+
 
     - name: get docker repo
       ansible.builtin.get_url:
