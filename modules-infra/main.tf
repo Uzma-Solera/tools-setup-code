@@ -1,7 +1,7 @@
 
 resource "aws_security_group" "tool" {
   name        = "${var.name}-sg"
-  description = "Security group for tool server"
+  description = "${var.name} security group"
 
   tags = {
     name = "${var.name}-sg"
