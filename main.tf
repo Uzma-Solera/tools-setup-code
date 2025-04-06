@@ -22,8 +22,8 @@ variable "tools" {
   }
 }
 
-module "modules.infra" {
-  source = "./modules.infra"
+module "modules-infra" {
+  source = "modules-infra"
   for_each = var.tools
 
   ami_id  = var.ami_id
