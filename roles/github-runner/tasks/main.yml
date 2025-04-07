@@ -37,8 +37,13 @@
 
 
 
+
+
+
+
+
     - name: configure runner
-      ansible.builtin.shell: ./config.cmd --url https://github.com/Aahil684 --token {{ lookup('community.hashi_vault.hashi_vault', 'secret=infra/data/github-runner:RUNNER_TOKEN token={{ vault_token }} url=http://vault-internal.uzma83.shop:8200') }} --unattended
+      ansible.builtin.shell: ./config.sh --url https://github.com/Aahil684 --token {{ lookup('community.hashi_vault.hashi_vault', 'secret=infra/data/github-runner:RUNNER_TOKEN token={{ vault_token }} url=http://vault-internal.uzma83.shop:8200') }} --unattended
       args:
         chdir: /actions-runner
       become_user: github
