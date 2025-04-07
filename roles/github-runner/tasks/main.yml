@@ -64,7 +64,7 @@
 - name: copy hashicorp repo
   ansible.builtin.template:
     src: hashicorp.repo
-    dest: etc/yum.repos.d/hashicorp.repo
+    dest: /etc/yum.repos.d/hashicorp.repo
 
 - name: install terraform
   ansible.builtin.dnf:
@@ -93,8 +93,8 @@
 
 - name: get docker repo
   ansible.builtin.get_url:
-      url: https://download.docker.com/linux/rhel/docker-ce.repo
-      dest: /etc/yum.repos.d/docker.repo
+     url: https://download.docker.com/linux/rhel/docker-ce.repo
+     dest: /etc/yum.repos.d/docker.repo
 
 
 - name: install docker
