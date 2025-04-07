@@ -23,7 +23,7 @@
 
     - name: unarchive a file on remote machine
       ansible.builtin.unarchive:
-        src: https://github.com/actions/runner/releases/download/v2.323.0/actions-runner-win-x64-2.323.0.zip
+        src: https://github.com/actions/runner/releases/download/v2.323.0/actions-runner-linux-x64-2.323.0.tar.gz
         dest: /actions-runner
         remote_src: yes
         owner: github
@@ -39,7 +39,7 @@
       ansible.builtin.shell: ./config.cmd --url https://github.com/Aahil684 --token {{ lookup('community.hashi_vault.hashi_vault', 'secret=infra/data/github-runner:RUNNER_TOKEN token={{ vault_token }} url=http://vault-internal.uzma83.shop:8200') }} --unattended
       args:
         chdir: /actions-runner
-        become_user: github
+      become_user: github
 
     - name: copy service file
       ansible.builtin.template:
