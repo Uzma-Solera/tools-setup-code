@@ -61,70 +61,69 @@
         enabled: yes
         daemon-reload: yes
 
+- name: copy hashicorp repo
+  ansible.builtin.template:
+    src: hashicorp.repo
+    dest: etc/yum.repos.d/hashicorp.repo
 
-    - name: copy hashicorp repo
-      ansible.builtin.template:
-        src: hashicorp.repo
-        dest: etc/yum.repos.d/hashicorp.repo
+- name: install terraform
+  ansible.builtin.dnf:
+      name: terraform
+      state: installed
 
-    - name: install terraform
-      ansible.builtin.dnf:
-        name: terraform
-        state: installed
+- name: copy kubernetes repo file
+  ansible.builtin.template:
+      src: kubernetes.repo
+      dest: /etc/yum.repos.d/kubernetes.repo
 
-    - name: copy kubernetes repo file
-      ansible.builtin.template:
-        src: kubernetes.repo
-        dest: /etc/yum.repos.d/kubernetes.repo
+- name: install kubectl
+  ansible.builtin.dnf:
+      name: kubectl
+      state: installed
 
-    - name: install kubectl
-      ansible.builtin.dnf:
-        name: kubectl
-        state: installed
-
-    - name: install helm
-      ansible.builtin.shell:
-        curl -L -O https://get.helm.sh/helm-v3.17.2-linux-amd64.tar.gz
-        tar -xf helm-v3.17.2-linux-amd64.tar.gz
-        mv linux-amd64/helm /bin/helm
-      args:
-        chdir: /tmp
-
-
-    - name: get docker repo
-      ansible.builtin.get_url:
-        url: https://download.docker.com/linux/rhel/docker-ce.repo
-        dest: /etc/yum.repos.d/docker.repo
+- name: install helm
+  ansible.builtin.shell: |
+   curl -L -O https://get.helm.sh/helm-v3.17.2-linux-amd64.tar.gz
+    tar -xf helm-v3.17.2-linux-amd64.tar.gz
+    mv linux-amd64/helm /bin/helm
+  args:
+    chdir: /tmp
 
 
-    - name: install docker
-      ansible.builtin.dnf:
-        name: docker-ce
-        state: installed
 
-    - name: start docker
-      ansible.builtin.systemd_service:
-        name: docker
-        state: started
-        enabled: yes
-
-    - name: add github user to docker repo
-      ansible.builtin.user:
-        name: github
-        group: docker
+- name: get docker repo
+  ansible.builtin.get_url:
+      url: https://download.docker.com/linux/rhel/docker-ce.repo
+      dest: /etc/yum.repos.d/docker.repo
 
 
-    - name: enable nodejs
-      ansible.builtin.shell: dnf module disable nodejs -y ; dnf module enable nodejs:20 -y
+- name: install docker
+  ansible.builtin.dnf:
+      name: docker-ce
+      state: installed
 
-    - name: install nodejs
-      ansible.builtin.dnf:
-        name: nodejs
+- name: start docker
+  ansible.builtin.systemd_service:
+      name: docker
+      state: started
+      enabled: yes
 
-    - name: install maven
-      ansible.builtin.dnf:
-        name: maven
+- name: add github user to docker repo
+  ansible.builtin.user:
+      name: github
+      group: docker
 
+
+- name: enable nodejs
+  ansible.builtin.shell: dnf module disable nodejs -y ; dnf module enable nodejs:20 -y
+
+- name: install nodejs
+  ansible.builtin.dnf:
+      name: nodejs
+
+- name: install maven
+  ansible.builtin.dnf:
+      name: maven
 
 
 
