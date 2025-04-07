@@ -21,11 +21,6 @@
         owner: github
         group: github
 
-    - name: pip install
-      ansible.builtin.pip:
-        name: hvac
-        executable: pip3.11
-
 
     - name: unarchive a file on remote machine
       ansible.builtin.unarchive:
@@ -39,6 +34,11 @@
       ansible.builtin.dnf:
         name: libicu
         state: installed
+
+    - name: pip install
+      ansible.builtin.pip:
+        name: hvac
+        executable: pip3.11
 
 
     - name: configure runner
