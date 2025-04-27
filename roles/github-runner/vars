@@ -1,0 +1,10 @@
+lv_input:
+  - { lv: auditVol,   size: 4.4 }
+  - { lv: homeVol,    size: 1 }
+  - { lv: logVol,     size: 2 }
+  - { lv: rootVol,    size: 6 }
+  - { lv: swapVol,    size: 2 }
+  - { lv: varTmpVol,  size: 2 }
+  - { lv: varVol,     size: 12 }
+
+disk_name: nvme0n1

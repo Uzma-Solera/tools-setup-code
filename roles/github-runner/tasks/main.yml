@@ -1,6 +1,11 @@
 - name: set prompt
   ansible.builtin.shell: set-prompt {{ tool_name }}
 
+- name: LVM Layout
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: lvm
+
 - name: check already runner configurd status
   ansible.builtin.stat:
     path: /actions-runner/.runner
@@ -127,5 +132,9 @@
 
 
 
-
+- name: Install Argocd
+  ansible.builtin.shell: |
+    curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+    sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+    rm argocd-linux-amd64
 
