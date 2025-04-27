@@ -1,11 +1,6 @@
 - name: set prompt
   ansible.builtin.shell: set-prompt {{ tool_name }}
 
-- name: LVM Layout
-  ansible.builtin.include_role:
-    name: common
-    tasks_from: lvm
-
 - name: check already runner configurd status
   ansible.builtin.stat:
     path: /actions-runner/.runner
